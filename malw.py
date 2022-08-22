@@ -8,7 +8,11 @@ connection = psycopg2.connect(user="postgres",
                               port="5432",
                               database="malw_db")
 cursor = connection.cursor()
-tags = input("Please add some tags sperated by commas: ")
+tags = input("Please add some tags sperated by spaces: ")
+
+#CREATE DATABASE malw_db;
+#create table sections (file_sha512 varchar(128), name varchar(255), section_md5 varchar(32), section_sha1 varchar(40), section_sha256 varchar(64), section_sha512 varchar(128)); 
+#create table malware(id serial PRIMARY KEY, time varchar(40), imphash varchar(32), file_md5 varchar(32), file_sha1 varchar(40), file_sha256 varchar(64), file_sha512 varchar(128), ssdeep varchar(255), section_num int); 
 
 file = sys.argv[1]
 malware = pefile.PE(file)
@@ -32,12 +36,18 @@ print("sha512: ", file_sha512)
 print("Imphash: ", imphash)
 print("Ssdeep: ", ssdeep_hash)
 
-cursor.execute("SELECT * FROM malware WHERE imphash = %s OR file_md5 = %s OR file_sha1 = %s OR file_sha256 = %s OR file_sha512 = %s", (imphash, file_md5, file_sha1, file_sha256, file_sha512,))
+cursor.execute("SELECT * FROM malware WHERE file_md5 = %s OR file_sha1 = %s OR file_sha256 = %s OR file_sha512 = %s", (file_md5, file_sha1, file_sha256, file_sha512,))
 result_set = cursor.fetchall()
-print("-----------\nFound", len(result_set),"matches: ")
+print("-----------\nFound", len(result_set),"matches by file hashes: ")
 for row in result_set:
     print(row[5])
-    
+
+cursor.execute("SELECT * FROM malware WHERE imphash = %s", (imphash,))
+result_set = cursor.fetchall()
+print("-----------\nFound", len(result_set),"matching imphash: ")
+for row in result_set:
+    print(row[5])
+   
 print("-----------\nssdeep compare:")
 cursor.execute("SELECT ssdeep, file_sha256 FROM malware")
 result_set = cursor.fetchall()
@@ -135,11 +145,6 @@ if len(other) > 0:
 	print("Other malware functions:")
 	for i in other:
 		print("\t", i)
-
-
-
-
-
 
 
 """
