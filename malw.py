@@ -1,4 +1,4 @@
-import pefile, ssdeep, psycopg2
+import pefile, ssdeep, psycopg2, re, sys
 from datetime import datetime
 from filehash import FileHash
 
@@ -9,7 +9,12 @@ connection = psycopg2.connect(user="postgres",
                               database="malw_db")
 cursor = connection.cursor()
 
-file = "/home/dev/Desktop/emotet3.exe"
+
+#CREATE DATABASE malw_db;
+#create table sections (file_sha512 varchar(128), name varchar(255), section_md5 varchar(32), section_sha1 varchar(40), section_sha256 varchar(64), section_sha512 varchar(128)); 
+#create table malware(id serial PRIMARY KEY, time varchar(40), imphash varchar(32), file_md5 varchar(32), file_sha1 varchar(40), file_sha256 varchar(64), file_sha512 varchar(128), ssdeep varchar(255), section_num int); 
+
+file = sys.argv[1]
 malware = pefile.PE(file)
 
 time = malware.FILE_HEADER.TimeDateStamp
@@ -74,27 +79,91 @@ for x in range(0, section_num):
 	    print("\t\tSection", row[1], "matches in", row[0])
 	cursor.execute('INSERT INTO sections (file_sha256, name, section_md5, section_sha1, section_sha256, section_sha512) VALUES (%s, %s, %s, %s, %s, %s)', (file_sha256, name, section_md5, section_sha1, section_sha256, section_sha256))
 	connection.commit()
-	
-	
-"""
-RESULT EXAMPLE
 
-File name:  /home/dev/Desktop/emotet3.exe
+
+apis = []
+for entry in malware.DIRECTORY_ENTRY_IMPORT:
+	for imp in entry.imports:
+		if imp.name is not None:
+			imps = re.findall(r"'([^']*)'", str(imp.name))
+			apis.append(imps[0])
+
+		
+crypt = ["CryptAcquireContextA", "EncryptFileA", "CryptEncrypt", "CryptDecrypt", "CryptCreateHash", "CryptHashData", "CryptDeriveKey", "CryptSetKeyParam", "CryptGetHashParam", "CryptSetKeyParam", "CryptDestroyKey", "CryptGenRandom", "DecryptFileA", "FlushEfsCache", "GetLogicalDrives", "GetDriveTypeA", "CryptStringToBinary", "CryptBinaryToString", "CryptReleaseContext", "CryptDestroyHash", "EnumSystemLocalesA"]
+enum = ["CreateToolhelp32Snapshot", "EnumDeviceDrivers", "EnumProcesses", "EnumProcessModules", "EnumProcessModulesEx", "FindFirstFileA", "FindNextFileA", "GetLogicalProcessorInformation", "GetLogicalProcessorInformationEx", "GetModuleBaseNameA", "GetSystemDefaultLangId", "GetVersionExA", "GetWindowsDirectoryA", "IsWoW64Process", "Module32First", "Module32Next", "Process32First", "Process32Next", "ReadProcessMemory", "Thread32First", "Thread32Next", "GetSystemDirectoryA", "GetSystemTime", "ReadFile", "GetComputerNameA", "VirtualQueryEx", "GetProcessIdOfThread", "GetProcessId", "GetCurrentThread", "GetCurrentThreadId", "GetThreadId", "GetThreadInformation", "GetCurrentProcess", "GetCurrentProcessId", "SearchPathA", "GetFileTime", "GetFileAttributesA", "LookupPrivilegeValueA", "LookupAccountNameA", "GetCurrentHwProfileA", "GetUserNameA", "RegEnumKeyExA", "RegEnumValueA", "RegQueryInfoKeyA", "RegQueryMultipleValuesA", "RegQueryValueExA", "NtQueryDirectoryFile", "NtQueryInformationProcess", "NtQuerySystemEnvironmentValueEx", "EnumDesktopWindows", "EnumWindows", "NetShareEnum", "NetShareGetInfo", "NetShareCheck", "GetAdaptersInfo", "PathFileExistsA", "GetNativeSystemInfo", "RtlGetVersion", "GetIpNetTable", "GetLogicalDrives", "GetDriveTypeA", "RegEnumKeyA", "WNetEnumResourceA", "WNetCloseEnum", "FindFirstUrlCacheEntryA", "FindNextUrlCacheEntryA", "WNetAddConnection2A", "WNetAddConnectionA", "EnumResourceTypesA", "EnumResourceTypesExA", "GetSystemTimeAsFileTime", "GetThreadLocale", "EnumSystemLocalesA2"]
+inj = ["CreateFileMappingA" "CreateProcessA", "CreateRemoteThread", "CreateRemoteThreadEx", "GetModuleHandleA", "GetProcAddress", "GetThreadContext", "HeapCreate", "LoadLibraryA", "LoadLibraryExA", "LocalAlloc", "MapViewOfFile", "MapViewOfFile2", "MapViewOfFile3", "MapViewOfFileEx", "OpenThread", "Process32First", "Process32Next", "QueueUserAPC", "ReadProcessMemory", "ResumeThread", "SetProcessDEPPolicy", "SetThreadContext", "SuspendThread", "Thread32First", "Thread32Next", "Toolhelp32ReadProcessMemory", "VirtualAlloc", "VirtualAllocEx", "VirtualProtect", "VirtualProtectEx", "WriteProcessMemory", "VirtualAllocExNuma", "VirtualAlloc2", "VirtualAlloc2FromApp", "VirtualAllocFromApp", "VirtualProtectFromApp", "CreateThread", "WaitForSingleObject", "OpenProcess", "OpenFileMappingA", "GetProcessHeap", "GetProcessHeaps", "HeapAlloc", "HeapReAlloc", "GlobalAlloc", "AdjustTokenPrivileges", "CreateProcessAsUserA", "OpenProcessToken", "CreateProcessWithTokenW", "NtAdjustPrivilegesToken", "NtAllocateVirtualMemory", "NtContinue", "NtCreateProcess", "NtCreateProcessEx", "NtCreateSection", "NtCreateThread", "NtCreateThreadEx", "NtCreateUserProcess", "NtDuplicateObject", "NtMapViewOfSection", "NtOpenProcess", "NtOpenThread", "NtProtectVirtualMemory", "NtQueueApcThread", "NtQueueApcThreadEx", "NtQueueApcThreadEx2", "NtReadVirtualMemory", "NtResumeThread", "NtUnmapViewOfSection", "NtWaitForMultipleObjects", "NtWaitForSingleObject", "NtWriteVirtualMemory", "RtlCreateHeap", "LdrLoadDll", "RtlMoveMemory", "RtlCopyMemory", "SetPropA", "WaitForSingleObjectEx", "WaitForMultipleObjects", "WaitForMultipleObjectsEx", "KeInsertQueueApc", "Wow64SetThreadContext", "NtSuspendProcess", "NtResumeProcess", "DuplicateToken", "NtReadVirtualMemoryEx", "CreateProcessInternal", "EnumSystemLocalesA", "UuidFromStringA"]
+eva = ["CreateFileMappingA", "DeleteFileA", "GetModuleHandleA", "GetProcAddress", "LoadLibraryA", "LoadLibraryExA", "LoadResource", "SetEnvironmentVariableA", "SetFileTime", "Sleep", "WaitForSingleObject", "SetFileAttributesA", "SleepEx", "NtDelayExecution", "NtWaitForMultipleObjects", "NtWaitForSingleObject", "CreateWindowExA", "RegisterHotKey", "timeSetEvent", "IcmpSendEcho", "WaitForSingleObjectEx", "WaitForMultipleObjects", "WaitForMultipleObjectsEx", "SetWaitableTimer", "CreateTimerQueueTimer", "CreateWaitableTimer", "SetWaitableTimer", "SetTimer", "Select", "ImpersonateLoggedOnUser", "SetThreadToken", "DuplicateToken", "SizeOfResource", "LockResource", "CreateProcessInternal", "TimeGetTime", "EnumSystemLocalesA", "UuidFromStringA"]
+spy = ["AttachThreadInput", "CallNextHookEx", "GetAsyncKeyState", "GetClipboardData", "GetDC", "GetDCEx", "GetForegroundWindow", "GetKeyboardState", "GetKeyState", "GetMessageA", "GetRawInputData", "GetWindowDC", "MapVirtualKeyA", "MapVirtualKeyExA", "PeekMessageA", "PostMessageA", "PostThreadMessageA", "RegisterHotKey", "RegisterRawInputDevices", "SendMessageA", "SendMessageCallbackA", "SendMessageTimeoutA", "SendNotifyMessageA", "SetWindowsHookExA", "SetWinEventHook", "UnhookWindowsHookEx", "BitBlt", "StretchBlt", "GetKeynameTextA"]
+net = ["WinExec", "FtpPutFileA", "HttpOpenRequestA", "HttpSendRequestA", "HttpSendRequestExA", "InternetCloseHandle", "InternetOpenA", "InternetOpenUrlA", "InternetReadFile", "InternetReadFileExA", "InternetWriteFile", "URLDownloadToFile", "URLDownloadToCacheFile", "URLOpenBlockingStream", "URLOpenStream", "Accept", "Bind", "Connect", "Gethostbyname", "Inet_addr", "Recv", "Send", "WSAStartup", "Gethostname", "Socket", "WSACleanup", "Listen", "ShellExecuteA", "ShellExecuteExA", "DnsQuery_A", "DnsQueryEx", "WNetOpenEnumA", "FindFirstUrlCacheEntryA", "FindNextUrlCacheEntryA", "InternetConnectA", "InternetSetOptionA", "WSASocketA", "Closesocket", "WSAIoctl", "ioctlsocket", "HttpAddRequestHeaders"]
+anti = ["CreateToolhelp32Snapshot", "GetLogicalProcessorInformation", "GetLogicalProcessorInformationEx", "GetTickCount", "OutputDebugStringA", "CheckRemoteDebuggerPresent", "Sleep", "GetSystemTime", "GetComputerNameA", "SleepEx", "IsDebuggerPresent", "GetUserNameA", "NtQueryInformationProcess", "ExitWindowsEx", "FindWindowA", "FindWindowExA", "GetForegroundWindow", "GetTickCount64", "QueryPerformanceFrequency", "QueryPerformanceCounter", "GetNativeSystemInfo", "RtlGetVersion", "GetSystemTimeAsFileTime", "CountClipboardFormats"]
+etc = ["ConnectNamedPipe", "CopyFileA", "CreateFileA", "CreateMutexA", "CreateMutexExA", "DeviceIoControl", "FindResourceA", "FindResourceExA", "GetModuleBaseNameA", "GetModuleFileNameA", "GetModuleFileNameExA", "GetTempPathA", "IsWoW64Process", "MoveFileA", "MoveFileExA", "PeekNamedPipe", "WriteFile", "TerminateThread", "CopyFile2", "CopyFileExA", "CreateFile2", "GetTempFileNameA", "TerminateProcess", "SetCurrentDirectory", "FindClose", "SetThreadPriority", "UnmapViewOfFile", "ControlService", "ControlServiceExA", "CreateServiceA", "DeleteService", "OpenSCManagerA", "OpenServiceA", "RegOpenKeyA", "RegOpenKeyExA", "StartServiceA", "StartServiceCtrlDispatcherA", "RegCreateKeyExA", "RegCreateKeyA", "RegSetValueExA", "RegSetKeyValueA", "RegDeleteValueA", "RegOpenKeyExA", "RegEnumKeyExA", "RegEnumValueA", "RegGetValueA", "RegFlushKey", "RegGetKeySecurity", "RegLoadKeyA", "RegLoadMUIStringA", "RegOpenCurrentUser", "RegOpenKeyTransactedA", "RegOpenUserClassesRoot", "RegOverridePredefKey", "RegReplaceKeyA", "RegRestoreKeyA", "RegSaveKeyA", "RegSaveKeyExA", "RegSetKeySecurity", "RegUnLoadKeyA", "RegConnectRegistryA", "RegCopyTreeA", "RegCreateKeyTransactedA", "RegDeleteKeyA", "RegDeleteKeyExA", "RegDeleteKeyTransactedA", "RegDeleteKeyValueA", "RegDeleteTreeA", "RegDeleteValueA", "RegCloseKey", "NtClose", "NtCreateFile", "NtDeleteKey", "NtDeleteValueKey", "NtMakeTemporaryObject", "NtSetContextThread", "NtSetInformationProcess", "NtSetInformationThread", "NtSetSystemEnvironmentValueEx", "NtSetValueKey", "NtShutdownSystem", "NtTerminateProcess", "NtTerminateThread", "RtlSetProcessIsCritical", "DrawTextExA", "GetDesktopWindow", "SetClipboardData", "SetWindowLongA", "SetWindowLongPtrA", "OpenClipboard", "SetForegroundWindow", "BringWindowToTop", "SetFocus", "ShowWindow", "NetShareSetInfo", "NetShareAdd", "NtQueryTimer", "GetIpNetTable", "GetLogicalDrives", "GetDriveTypeA", "CreatePipe", "RegEnumKeyA", "WNetOpenEnumA", "WNetEnumResourceA", "WNetAddConnection2A", "CallWindowProcA", "NtResumeProcess", "lstrcatA", "ImpersonateLoggedOnUser", "SetThreadToken", "SizeOfResource", "LockResource", "UuidFromStringA"]
+
+ransomware = set(apis).intersection(crypt)
+enumeration = set(apis).intersection(enum)
+injection = set(apis).intersection(inj)
+evasion = set(apis).intersection(eva)
+spying = set(apis).intersection(spy)
+internet = set(apis).intersection(net)
+antidebug = set(apis).intersection(anti)
+other = set(apis).intersection(etc)
+print("-----------\nSuspicious WinAPIs:\n")
+if len(ransomware) > 0:
+	print("Cryptographic functions:")
+	for i in ransomware:
+		print("\t", i)
+if len(enumeration) > 0:
+	print("System enumeration:")
+	for i in enumeration:
+		print("\t", i)
+if len(injection) > 0:
+	print("Process related attacks:")
+	for i in injection:
+		print("\t", i)
+if len(evasion) > 0:
+	print("Evasive behaviour:")
+	for i in evasion:
+		print("\t", i)
+if len(spying) > 0:
+	print("Spying on user action:")
+	for i in spying:
+		print("\t", i)
+if len(internet) > 0:
+	print("Internet connectivity:")
+	for i in internet:
+		print("\t", i)
+if len(spying) > 0:
+	print("Anti-debugging functions:")
+	for i in spying:
+		print("\t", i)
+if len(other) > 0:
+	print("Other malware functions:")
+	for i in other:
+		print("\t", i)
+
+
+
+"""
+
+EXAMPLE RESULT
+
+File name:  /home/dev/Desktop/emotet2.exe
 Compilation timestamp:  2022-07-01 13:47:26
-MD5:  b2e8a93629044e790dff4d779dcbcd0d
-sha1:  d880badbb5b3041e401db1000079f4b06bb875d3
-sha256:  258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
-sha512:  ceb3d3e761a1dc88651b63703f728313c515f2e06feec686c1b1e05f424c9fb828345d88cb93ee54fd98c1345429edfb6b774e33e4b4a4f10f2d92290e938d6c
+MD5:  e56b34b4f506e8607a1d9d0fe22dec34
+sha1:  f560733a1361162911f902034b19d7b414703ffe
+sha256:  791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
+sha512:  cfae265178c94396b43a2f07753a6ce87851986781259c3b12b4051e4057e3b9ba034f30f22153551f37af1e4fd74e1948e24340e7d8200219407294a6f6e4b9
 Imphash:  311fcea8519089f91be16d46a87cbd88
-Ssdeep:  12288:QolWKutgKC7t1DtuANCqKLvr+U4rG2a/FviAzPVC5Go3DHeFP8ge/wgS0yXD:QolJutQnCqWB5ztqL6x
+Ssdeep:  12288:QolWKutg7C7t1DtuANCqKLvr+U4rG2a/FviAzPVC5Go3DHeFP8ge/wgS0yXD:QolJut3nCqWB5ztqL6x
 -----------
-Found 2 matches: 
+Found 3 matches: 
+791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 ssdeep compare:
-99 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-100 % match with 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
+100 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
+100 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
+99 % match with 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 NumberOfSections:  6
 -----------
@@ -107,21 +176,23 @@ Section name: .text
 	Virtual size:  148238
 	SizeOfRawData:  148480
 	Flags:  1610612768
-	Found 2  matches: 
+	Found 3  matches: 
+		Section .text matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .text matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .text matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Section name: .rdata
-	Entropy (Min=0.0, Max=8.0): 4.593279359686581
-	MD5 hash:  45071407a9b88730d94d6bfffa8a3f1d
-	SHA1 hash:  e5a069b79076636f963bac200067866eedb173f4
-	SHA256 hash:  e6f8b674d8ac3cf69d5cb0c9f6372de7f8132ee1dc5f03d1f4bf7835f6cd2f74
-	SHA512 hash:  9a2077224d824d1dfa37b1182d1596ef3c43a1060c6982474699099e29fa00bd65cf9737fc83d799f91bfd837fc6ee3387147266a450928cfdbaa03cb41bce43
+	Entropy (Min=0.0, Max=8.0): 4.59376534829807
+	MD5 hash:  132b89ae972e5be04cf4952746188456
+	SHA1 hash:  0297d8bc0db6da412df23b7f29a485a64a9c3c9e
+	SHA256 hash:  8f5a4c99509167166a05cdee60d7af115f81a3a373e5b05ee80ab4c86e621516
+	SHA512 hash:  e5150847ee863578cc8f540736245579882af269c7e1d476fdf67bc7249df4d0513af0b8d96ac429732c7ff1fa93418ef1979f359c3a0853069f0a40370da9e9
 	Virtual size:  42962
 	SizeOfRawData:  43008
 	Flags:  1073741888
-	Found 1  matches: 
-		Section .rdata matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
+	Found 2  matches: 
+		Section .rdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
+		Section .rdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 -----------
 Section name: .data
 	Entropy (Min=0.0, Max=8.0): 3.502583975677695
@@ -132,7 +203,8 @@ Section name: .data
 	Virtual size:  19492
 	SizeOfRawData:  9216
 	Flags:  3221225536
-	Found 2  matches: 
+	Found 3  matches: 
+		Section .data matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .data matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .data matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
@@ -145,7 +217,8 @@ Section name: .pdata
 	Virtual size:  7404
 	SizeOfRawData:  7680
 	Flags:  1073741888
-	Found 2  matches: 
+	Found 3  matches: 
+		Section .pdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .pdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .pdata matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
@@ -158,7 +231,8 @@ Section name: .rsrc
 	Virtual size:  538108
 	SizeOfRawData:  538112
 	Flags:  1073741888
-	Found 2  matches: 
+	Found 3  matches: 
+		Section .rsrc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .rsrc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .rsrc matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
@@ -171,7 +245,35 @@ Section name: .reloc
 	Virtual size:  3382
 	SizeOfRawData:  3584
 	Flags:  1107296320
-	Found 2  matches: 
+	Found 3  matches: 
+		Section .reloc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .reloc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 		Section .reloc matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
+-----------
+Suspicious WinAPIs:
+
+Cryptographic functions:
+	 EnumSystemLocalesA
+System enumeration:
+	 GetSystemTimeAsFileTime
+	 ReadFile
+	 GetCurrentProcess
+	 GetCurrentThreadId
+	 GetCurrentProcessId
+Process related attacks:
+	 HeapReAlloc
+	 HeapAlloc
+	 EnumSystemLocalesA
+	 HeapCreate
+	 VirtualAlloc
+	 GetProcAddress
+Evasive behaviour:
+	 EnumSystemLocalesA
+	 GetProcAddress
+	 Sleep
+Other malware functions:
+	 ShowWindow
+	 GetModuleFileNameA
+	 WriteFile
+	 TerminateProcess
 """
