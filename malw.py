@@ -74,13 +74,62 @@ for x in range(0, section_num):
 	cursor.execute('INSERT INTO sections (file_sha512, name, section_md5, section_sha1, section_sha256, section_sha512) VALUES (%s, %s, %s, %s, %s, %s)', (file_sha512, name, section_md5, section_sha1, section_sha256, section_sha512))
 	connection.commit()
 
+"""
+RESULT EXAMPLE
+File name:  /home/dev/Desktop/emotet.exe
+Compilation timestamp:  2015-11-12 18:44:45
+MD5:  f46760dde255ede0893d16da99853479
+sha1:  a5eff59f9e6b521ef26993aabe9fde7c1891eba2
+sha256:  d6a29fd9aa6e32884e5319ccc5780b04fc95436311f83e7a857a731c7c42157f
+sha512:  a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
+Imphash:  f7eedf970238bb516041f4bd90f41d32
+Ssdeep:  6144:jXXe6AlgKhwpyy3DeGoOqnAh/cMJQMuVuZQQQQQQQQQQQQQQQQQQBvgZXn:jnouTSGoOqMkMJQMguZQQQQQQQQQQQQq
+-----------
+Found 1 matches: 
+a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
+-----------
+ssdeep compare:
+100 % match with a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
+-----------
+NumberOfSections:  3
+-----------
+Section name: .text
+	Entropy (Min=0.0, Max=8.0): 7.549989525536801
+	MD5 hash:  83ecf2c7b214a650c6410e626104f034
+	SHA1 hash:  330358ecff4ed91cad7ed5b0b94b8fc8c84bd905
+	SHA256 hash:  f2f50043d8c5233f7ce3d44264acfd6fb329ae4d0a81dea006b8e071771b1511
+	SHA512 hash:  972a05c7d70d4d245a29747c84e341a53e27d7663c60b52755e13e88be1fdb50b481d7c3728ee49297c39e2184268de9ff958dabcc438ec388539bd19841f1e4
+	Virtual size:  259776
+	SizeOfRawData:  262144
+	Flags:  1610612768
+	Found 1  matches: 
+		Section .text matches in a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
+-----------
+Section name: .data
+	Entropy (Min=0.0, Max=8.0): 0.0
+	MD5 hash:  620f0b67a91f7f74151bc5be745b7110
+	SHA1 hash:  1ceaf73df40e531df3bfb26b4fb7cd95fb7bff1d
+	SHA256 hash:  ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7
+	SHA512 hash:  2d23913d3759ef01704a86b4bee3ac8a29002313ecc98a7424425a78170f219577822fd77e4ae96313547696ad7d5949b58e12d5063ef2ee063b595740a3a12d
+	Virtual size:  8632
+	SizeOfRawData:  4096
+	Flags:  3221225536
+	Found 1  matches: 
+		Section .data matches in a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
+-----------
+Section name: .rsrc
+	Entropy (Min=0.0, Max=8.0): 2.1005310015699044
+	MD5 hash:  8c3ff9780a45759f62fe015ed1783875
+	SHA1 hash:  95059ebab0e0ab91dd6ff8a994baeefc4487bf85
+	SHA256 hash:  83fe9a9bdb0107cf1a4134c8f278da851afd5492fc3b37b532034b775040ae0e
+	SHA512 hash:  cc4d3c36bddf49285b80cc99b7aad2ee4dab8f031a7aecbc8560315b2238c54b8f5eaa8dd4eeeee189a6a37ec4f5edb1f48d641f1cd1a5855d032ab0464481c3
+	Virtual size:  2388
+	SizeOfRawData:  4096
+	Flags:  1073741888
+	Found 1  matches: 
+		Section .rsrc matches in a155df2a2f52cfc1a1c2602d0e7407b8a53bb9ed745a3c75ea98a0a47ec8db773a50c2eac6112d79cd403941bd34a597f56fa3b3e57e1749c05ba0d883ab1703
 
-print("-----------\nWIN API Calls:")
-for entry in malware.DIRECTORY_ENTRY_IMPORT:
-	print(str(entry.dll))
-	for imp in entry.imports:
-		print("\t", str(imp.name))
 
-
+"""
 
 
