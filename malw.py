@@ -151,24 +151,23 @@ if len(other) > 0:
 
 EXAMPLE RESULT
 
-File name:  /home/dev/Desktop/emotet2.exe
+Please add some tags sperated by spaces: emotet malware
+File name:  /home/dev/Desktop/emotet3.exe
 Compilation timestamp:  2022-07-01 13:47:26
-MD5:  e56b34b4f506e8607a1d9d0fe22dec34
-sha1:  f560733a1361162911f902034b19d7b414703ffe
-sha256:  791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-sha512:  cfae265178c94396b43a2f07753a6ce87851986781259c3b12b4051e4057e3b9ba034f30f22153551f37af1e4fd74e1948e24340e7d8200219407294a6f6e4b9
+MD5:  b2e8a93629044e790dff4d779dcbcd0d
+sha1:  d880badbb5b3041e401db1000079f4b06bb875d3
+sha256:  258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
+sha512:  ceb3d3e761a1dc88651b63703f728313c515f2e06feec686c1b1e05f424c9fb828345d88cb93ee54fd98c1345429edfb6b774e33e4b4a4f10f2d92290e938d6c
 Imphash:  311fcea8519089f91be16d46a87cbd88
-Ssdeep:  12288:QolWKutg7C7t1DtuANCqKLvr+U4rG2a/FviAzPVC5Go3DHeFP8ge/wgS0yXD:QolJut3nCqWB5ztqL6x
+Ssdeep:  12288:QolWKutgKC7t1DtuANCqKLvr+U4rG2a/FviAzPVC5Go3DHeFP8ge/wgS0yXD:QolJutQnCqWB5ztqL6x
 -----------
-Found 3 matches: 
+Found 0 matches by file hashes: 
+-----------
+Found 1 matching imphash: 
 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 ssdeep compare:
-100 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-100 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-99 % match with 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
+99 % match with 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
 -----------
 NumberOfSections:  6
 -----------
@@ -181,23 +180,19 @@ Section name: .text
 	Virtual size:  148238
 	SizeOfRawData:  148480
 	Flags:  1610612768
-	Found 3  matches: 
+	Found 1  matches: 
 		Section .text matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .text matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .text matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Section name: .rdata
-	Entropy (Min=0.0, Max=8.0): 4.59376534829807
-	MD5 hash:  132b89ae972e5be04cf4952746188456
-	SHA1 hash:  0297d8bc0db6da412df23b7f29a485a64a9c3c9e
-	SHA256 hash:  8f5a4c99509167166a05cdee60d7af115f81a3a373e5b05ee80ab4c86e621516
-	SHA512 hash:  e5150847ee863578cc8f540736245579882af269c7e1d476fdf67bc7249df4d0513af0b8d96ac429732c7ff1fa93418ef1979f359c3a0853069f0a40370da9e9
+	Entropy (Min=0.0, Max=8.0): 4.593279359686581
+	MD5 hash:  45071407a9b88730d94d6bfffa8a3f1d
+	SHA1 hash:  e5a069b79076636f963bac200067866eedb173f4
+	SHA256 hash:  e6f8b674d8ac3cf69d5cb0c9f6372de7f8132ee1dc5f03d1f4bf7835f6cd2f74
+	SHA512 hash:  9a2077224d824d1dfa37b1182d1596ef3c43a1060c6982474699099e29fa00bd65cf9737fc83d799f91bfd837fc6ee3387147266a450928cfdbaa03cb41bce43
 	Virtual size:  42962
 	SizeOfRawData:  43008
 	Flags:  1073741888
-	Found 2  matches: 
-		Section .rdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .rdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
+	Found 0  matches: 
 -----------
 Section name: .data
 	Entropy (Min=0.0, Max=8.0): 3.502583975677695
@@ -208,10 +203,8 @@ Section name: .data
 	Virtual size:  19492
 	SizeOfRawData:  9216
 	Flags:  3221225536
-	Found 3  matches: 
+	Found 1  matches: 
 		Section .data matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .data matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .data matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Section name: .pdata
 	Entropy (Min=0.0, Max=8.0): 5.17276425766517
@@ -222,10 +215,8 @@ Section name: .pdata
 	Virtual size:  7404
 	SizeOfRawData:  7680
 	Flags:  1073741888
-	Found 3  matches: 
+	Found 1  matches: 
 		Section .pdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .pdata matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .pdata matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Section name: .rsrc
 	Entropy (Min=0.0, Max=8.0): 7.924545690560659
@@ -236,10 +227,8 @@ Section name: .rsrc
 	Virtual size:  538108
 	SizeOfRawData:  538112
 	Flags:  1073741888
-	Found 3  matches: 
+	Found 1  matches: 
 		Section .rsrc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .rsrc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .rsrc matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Section name: .reloc
 	Entropy (Min=0.0, Max=8.0): 3.0740959788330127
@@ -250,35 +239,32 @@ Section name: .reloc
 	Virtual size:  3382
 	SizeOfRawData:  3584
 	Flags:  1107296320
-	Found 3  matches: 
+	Found 1  matches: 
 		Section .reloc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .reloc matches in 791c0f3e7e6d9c570ad29269ec3bc3f78fadc3c1952f35eb7ac694f3e31551aa
-		Section .reloc matches in 258bb2b23c6ea7434eb8c965a168e7eb87257f5d3e4c4272c5ab29e873d6fbd3
 -----------
 Suspicious WinAPIs:
 
 Cryptographic functions:
 	 EnumSystemLocalesA
 System enumeration:
-	 GetSystemTimeAsFileTime
-	 ReadFile
 	 GetCurrentProcess
-	 GetCurrentThreadId
 	 GetCurrentProcessId
+	 GetCurrentThreadId
+	 ReadFile
+	 GetSystemTimeAsFileTime
 Process related attacks:
-	 HeapReAlloc
 	 HeapAlloc
 	 EnumSystemLocalesA
-	 HeapCreate
-	 VirtualAlloc
 	 GetProcAddress
+	 VirtualAlloc
+	 HeapReAlloc
+	 HeapCreate
 Evasive behaviour:
 	 EnumSystemLocalesA
-	 GetProcAddress
 	 Sleep
+	 GetProcAddress
 Other malware functions:
 	 ShowWindow
+	 TerminateProcess
 	 GetModuleFileNameA
 	 WriteFile
-	 TerminateProcess
-"""
