@@ -9,11 +9,6 @@ connection = psycopg2.connect(user="postgres",
                               database="malw_db")
 cursor = connection.cursor()
 
-
-#CREATE DATABASE malw_db;
-#create table sections (file_sha512 varchar(128), name varchar(255), section_md5 varchar(32), section_sha1 varchar(40), section_sha256 varchar(64), section_sha512 varchar(128)); 
-#create table malware(id serial PRIMARY KEY, time varchar(40), imphash varchar(32), file_md5 varchar(32), file_sha1 varchar(40), file_sha256 varchar(64), file_sha512 varchar(128), ssdeep varchar(255), section_num int); 
-
 file = "/home/dev/Desktop/emotet3.exe"
 malware = pefile.PE(file)
 
