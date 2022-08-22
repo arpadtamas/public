@@ -8,11 +8,7 @@ connection = psycopg2.connect(user="postgres",
                               port="5432",
                               database="malw_db")
 cursor = connection.cursor()
-
-
-#CREATE DATABASE malw_db;
-#create table sections (file_sha512 varchar(128), name varchar(255), section_md5 varchar(32), section_sha1 varchar(40), section_sha256 varchar(64), section_sha512 varchar(128)); 
-#create table malware(id serial PRIMARY KEY, time varchar(40), imphash varchar(32), file_md5 varchar(32), file_sha1 varchar(40), file_sha256 varchar(64), file_sha512 varchar(128), ssdeep varchar(255), section_num int); 
+tags = input("Please add some tags sperated by commas: ")
 
 file = sys.argv[1]
 malware = pefile.PE(file)
@@ -51,7 +47,7 @@ for row in result_set:
 		print(percentage, "% match with", row[1])
     
     
-cursor.execute('INSERT INTO malware (time, imphash, file_md5, file_sha1, file_sha256, file_sha512, ssdeep, section_num) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (time, imphash, file_md5, file_sha1, file_sha256, file_sha512, ssdeep_hash, section_num))
+cursor.execute('INSERT INTO malware (time, imphash, file_md5, file_sha1, file_sha256, file_sha512, ssdeep, section_num, tags) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)', (time, imphash, file_md5, file_sha1, file_sha256, file_sha512, ssdeep_hash, section_num, tags))
 connection.commit()
 
 
@@ -139,6 +135,10 @@ if len(other) > 0:
 	print("Other malware functions:")
 	for i in other:
 		print("\t", i)
+
+
+
+
 
 
 
