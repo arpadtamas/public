@@ -1,7 +1,10 @@
-import json
-f = open('json.txt')
+import json, os
+os.system('capa -q -j /home/dev/Desktop/emotet2.exe > /tmp/emotet.json')
+f = open('/tmp/emotet.json')
 data = json.load(f)
 f.close()
+os.remove('/tmp/emotet.json')
+
 mbc = []
 
 for rulz in data['rules']:
