@@ -168,6 +168,13 @@ class showapi:
 			for i in other:
 				print("\t", i)
 				
+		print("\nExported symbols:")
+		for exp in malware.DIRECTORY_ENTRY_EXPORT.symbols:
+ 			print('\t' + exp.name.decode('utf-8'))
+class showstrings:
+	def __init__(self, file):
+		print("\n-----------\nURLs from strings:\n" + subprocess.check_output("strings " + file + " | grep -Eo '(http|https)://[a-zA-Z0-9./?=_%:-]*' | sort -u", shell=True).decode('ascii'))
+		print("IPv4 addresses from strings:\n" + subprocess.check_output("strings " + file + " | grep -Eo '(\\b25[0-5]|\\b2[0-4][0-9]|\\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}' | sort -u", shell=True).decode('ascii'))
 
 class capait:
 	def __init__(self, file):
@@ -243,6 +250,7 @@ print("""
 selfhash(file)
 sections(file)
 showapi(file)
+showstrings(file)
 print("""
 
 
@@ -258,4 +266,4 @@ print("""
 
 Capa rulz:""")
 capait(file)
-			
+#movefile(file)			
