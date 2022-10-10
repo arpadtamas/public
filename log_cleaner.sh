@@ -22,6 +22,6 @@ if [ -d $DIR ]; then
         	exit 1
         fi
 else
-        echo "It not a dir"
+        echo "It's not a dir"
         exit 1
 fi
