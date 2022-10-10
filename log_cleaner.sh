@@ -8,7 +8,7 @@ if [ -d $DIR ]; then
         occurence=$(grep -r $IPADDR $DIR | wc -l | awk '{print $1}')
         echo $occurence
         if [ $occurence -gt 0 ]; then
-        	read -p "Are you sure you want to delete? (y/n): " answer
+        	read -p "Are you sure you want to delete these lines? (y/n): " answer
  				if [ $answer = "y" ] || [ $answer = "Y" ]; then
  					for entry in "$DIR"/*
  						do
